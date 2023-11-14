@@ -28,10 +28,20 @@ def format_course_name(course_in):
     Returns:
         Formatted_course_name(str): course name adhered to style standard of courses in the Schedule of Classes
     '''
-    #retreiving and formatting the department portion of the course_in (the first 4 characters, ex: INST)
+    #the goal here is to give the users flexibility when entering course names by allowing them to enter lowercase letters 
+    #when uppercase letters are required for the webscrapers to work
+
+    #retreiving and formatting the department portion of the course name (the first 4 characters, ex: INST)
+    #making it uppercase
     department = (course_in[:4]).upper()
 
-    #formatting course_in to be congruent with formatting of course names on website
+    #formatting course name to be congruent with formatting of course names on website
     formatted_course_name = department + course_in[4:]
+
+    #in the odd case there is a letter at the end of the course name 
+    #make that letter uppercase
+    if formatted_course_name[-1].isalpha():
+        end_letter = formatted_course_name[-1].upper()
+        formatted_course_name = formatted_course_name[:-1] + end_letter
 
     return formatted_course_name
