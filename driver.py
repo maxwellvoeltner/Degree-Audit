@@ -1,13 +1,13 @@
 from misc import Course
+from ver import verify_genEd, verify_prerequisite, verify_corequisite, verify_major_requirements, verify_credits
 
 plan_complete = False
 graduation_plan = {}
-current_semester = 0
-
+current_semester = -1
 while plan_complete == False:
 
     current_semester += 1
-    print("Semester " + str(current_semester) + ":")
+    print(f"Semester {current_semester}:")
 
     semester_complete = False
     semester_courses = []
@@ -21,28 +21,12 @@ while plan_complete == False:
         elif course == "semester done":
             semester_complete = True
         else:
-            semester_courses.append(course)
+            semester_courses.append(Course(course))
 
     graduation_plan[current_semester] = semester_courses
 
-updated_plan = {}
-
-for semester, courses in graduation_plan.items():
-
-    course_list = []
-    for course in courses:
-
-        course = Course(course)
-        course_list.append(course)
-
-    updated_plan[semester] = course_list
-
-for semester, courses in updated_plan.items():
-    for course in courses:
-        print("name:", course.name)
-        print("credits:", course.credits)
-        print("prerequisites:", course.prerequisites)
-        print("corequisite:", course.corequisites)
-        print("crosslist:", course.crosslist)
-        print("genEd:", course.genEd)
-    
+print("Satisfies credit requirements:", verify_credits(graduation_plan))
+print("Satisifies prerequisite requirements:", verify_prerequisite(graduation_plan))
+print("Satisfies general Education requirements:", verify_genEd(graduation_plan))
+print("Satisfies corequisite requirements:", verify_corequisite(graduation_plan))
+print("Satisfies major requirements:", verify_major_requirements(graduation_plan))
