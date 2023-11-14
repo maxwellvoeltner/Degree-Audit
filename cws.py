@@ -5,6 +5,14 @@ from prp import crosslist_parser, prerequisite_assembler
 
 
 def get_content(course_in, url):
+    '''retreives the html content for a specific course on one of the schedule of classes pages
+       this is a subportion of the get_course_content function
+    Args:
+        course_in(str): name of the course
+        url(str): url link to the webpage where the content is housed
+    Returns:
+        content(soup object): html content of a specific course
+    '''
 
     #webscraping:
 
@@ -80,6 +88,12 @@ def get_credits(course_content):
 
 
 def clean_list(old_list):
+    '''filters and cleanly formats items in a list to make so the items can be effectively used in other funcions
+    Args:
+        old_list(list): list of items
+    Returns:
+        clean_list(list): list with filtered and cleanly formatted items
+    '''
     #initializing new list for cleaned requirements
     clean_list = []
 
@@ -94,6 +108,13 @@ def clean_list(old_list):
 
 
 def get_requirements(course_content):
+    '''gets the restrictions, prerequisites, corequisites, and crosslists associated with a course
+    Args:
+        course_in(str): name of a course
+    Returns:
+        requirements(list): list of restrictions, prerequisites, corequisites, and crosslists associated with a course
+        empty list if no requirements are found
+    '''
 
     #retreiving the prerequisites from the course on webpage
     try:
@@ -106,11 +127,18 @@ def get_requirements(course_content):
         requirements = clean_list(requirements)
         return requirements
     except:
+        #no requirements found in the first div tag of the first div tag which is where the requirements are always housed
         return []
 
 
 def get_corequisite(course_content):
-        
+    '''gets the corequisites course(s) of a course
+    Args:
+        course_in(str): name of a course
+    Returns:
+        requirement(str): phrase describing corequisite of a course
+        empty list if no corequisites are found
+    '''
     requirements = get_requirements(course_content)
     for requirement in requirements:
 
@@ -119,14 +147,20 @@ def get_corequisite(course_content):
         if requirement.startswith("Corequisite:"):
 
             requirement = requirement.replace("Corequisite: ", "")
-            return requirement
+            return [requirement]
         
     #none were found
     return []
 
 
 def get_prerequisites(course_content):
-        
+    '''gets the prerequisite courses for a course
+    Args:
+        course_in(str): name of a course
+    Returns:
+        prerequisites(list): list of prerequisite courses for a course
+        empty list if no prerequisites are found
+    ''' 
     requirements = get_requirements(course_content)
     for requirement in requirements:
 
@@ -143,7 +177,13 @@ def get_prerequisites(course_content):
 
 
 def get_crosslist(course_content):
-    
+    '''gets crosslist courses for a course
+    Args:
+        course_in(str): name of a course
+    Returns:
+        requirement(str): crosslist courses for a course
+        empty list if no crosslist is found
+    '''
     requirements = get_requirements(course_content)
     for requirement in requirements:
         if requirement.startswith("Credit only granted for:"):
@@ -155,7 +195,13 @@ def get_crosslist(course_content):
 
 
 def get_genEd(course_content):
-
+    '''gets the genEd satisfactions for a course
+    Args:
+        course_in(str): name of a course
+    Returns:
+        genEd(list): list of genEds
+        empty list if no genEds are found
+    '''
     #retreiving the genEds from the course on webpage
     try:
         genEd = course_content.find("div", class_ = "gen-ed-codes-group six columns")
